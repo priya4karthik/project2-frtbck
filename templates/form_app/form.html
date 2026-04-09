@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+{% block title %}Smart Registration — AI Form Assistant{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <p class="section-sub">Fill in the form, then click <strong>Get AI Tips</strong> to review your inputs.</p>
+  <h1 class="section-heading mt-1">Smart <span class="highlight">Registration</span> Form</h1>
+</div>
+
+<!-- Progress bar -->
+<div class="form-progress mb-3">
+  <div class="form-progress-bar" id="progressBar" style="width:0%"></div>
+</div>
+<div class="d-flex justify-content-between mb-4" style="font-size:.8rem;color:var(--muted)">
+  <span id="progressLabel">0% complete</span>
+  <span id="fieldCount">0 / 7 fields filled</span>
+</div>
+
+<div class="row g-4 align-items-start">
+
+  <!-- Form column -->
+  <div class="col-lg-8">
+    <div class="form-card">
+      <form id="registrationForm" method="POST" novalidate>
+        {% csrf_token %}
+
+        <!-- Personal Info -->
+        <p class="field-group-label"><i class="bi bi-person me-1"></i>Personal Information</p>
+        <div class="row g-3 mb-4">
+
+          <div class="col-md-6">
+            <label class="form-label" for="id_full_name">Full Name <span class="text-danger">*</span></label>
+            <input type="text" name="full_name" id="id_full_name"
+                   class="form-control {% if form.full_name.errors %}is-invalid{% endif %}"
+                   placeholder="e.g. Priya Sharma"
+                   value="{{ form.full_name.value|default:'' }}" required />
+            <div class="valid-feedback"><i class="bi bi-check-circle-fill me-1"></i>Looks good!</div>
+            <div class="invalid-feedback">{% for e in form.full_name.errors %}{{ e }}{% endfor %}<span class="js-error"></span></div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label" for="id_email">Email Address <span class="text-danger">*</span></label>
+            <input type="email" name="email" id="id_email"
+                   class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                   placeholder="you@example.com"
+                   value="{{ form.email.value|default:'' }}" required />
+            <div class="valid-feedback"><i class="bi bi-check-circle-fill me-1"></i>Valid email</div>
+            <div class="invalid-feedback">{% for e in form.email.errors %}{{ e }}{% endfor %}<span class="js-error"></span></div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label" for="id_phone">Phone Number <span class="text-danger">*</span></label>
+            <input type="tel" name="phone" id="id_phone"
+                   class="form-control {% if form.phone.errors %}is-invalid{% endif %}"
+                   placeholder="+91 98765 43210"
+                   value="{{ form.phone.value|default:'' }}" required />
+            <div class="valid-feedback"><i class="bi bi-check-circle-fill me-1"></i>Looks good!</div>
+            <div class="invalid-feedback">{% for e in form.phone.errors %}{{ e }}{% endfor %}<span class="js-error"></span></div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label" for="id_date_of_birth">Date of Birth <span class="text-danger">*</span></label>
+            <input type="date" name="date_of_birth" id="id_date_of_birth"
+                   class="form-control {% if form.date_of_birth.errors %}is-invalid{% endif %}"
+                   value="{{ form.date_of_birth.value|default:'' }}" required />
+            <div class="valid-feedback"><i class="bi bi-check-circle-fill me-1"></i>Looks good!</div>
+            <div class="invalid-feedback">{% for e in form.date_of_birth.errors %}{{ e }}{% endfor %}<span class="js-error"></span></div>
+          </div>
+        </div>
+
+        <!-- Location -->
+        <p class="field-group-label"><i class="bi bi-geo-alt me-1"></i>Location</p>
+        <div class="row g-3 mb-4">
+
+          <div class="col-12">
+            <label class="form-label" for="id_address">Street Address <span class="text-danger">*</span></label>
+            <textarea name="address" id="id_address" rows="2"
+                      class="form-control {% if form.address.errors %}is-invalid{% endif %}"
+                      placeholder="123 MG Road, Apartment 4B" required>{{ form.address.value|default:'' }}</textarea>
+            <div class="valid-feedback"><i class="bi bi-check-circle-fill me-1"></i>Looks good!</div>
+            <div class="invalid-feedback">{% for e in form.address.errors %}{{ e }}{% endfor %}<span class="js-error"></span></div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label" for="id_city">City <span class="text-danger">*</span></label>
+            <input type="text" name="city" id="id_city"
+                   class="form-control {% if form.city.errors %}is-invalid{% endif %}"
+                   placeholder="Bengaluru"
+                   value="{{ form.city.value|default:'' }}" required />
+            <div class="valid-feedback"><i class="bi bi-check-circle-fill me-1"></i>Looks good!</div>
+            <div class="invalid-feedback">{% for e in form.city.errors %}{{ e }}{% endfor %}<span class="js-error"></span></div>
+          </div>
+        </div>
+
+        <!-- Professional -->
+        <p class="field-group-label"><i class="bi bi-briefcase me-1"></i>Professional Details</p>
+        <div class="row g-3 mb-4">
+
+          <div class="col-md-6">
+            <label class="form-label" for="id_occupation">Occupation <span class="text-danger">*</span></label>
+            <input type="text" name="occupation" id="id_occupation"
+                   class="form-control {% if form.occupation.errors %}is-invalid{% endif %}"
+                   placeholder="Software Engineer"
+                   value="{{ form.occupation.value|default:'' }}" required />
+            <div class="valid-feedback"><i class="bi bi-check-circle-fill me-1"></i>Looks good!</div>
+            <div class="invalid-feedback">{% for e in form.occupation.errors %}{{ e }}{% endfor %}<span class="js-error"></span></div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label" for="id_bio">Short Bio <span class="text-muted">(optional)</span></label>
+            <textarea name="bio" id="id_bio" rows="4"
+                      class="form-control {% if form.bio.errors %}is-invalid{% endif %}"
+                      placeholder="Tell us about your experience, interests, goals…">{{ form.bio.value|default:'' }}</textarea>
+            <div class="d-flex justify-content-between mt-1">
+              <div class="invalid-feedback d-block text-danger" style="font-size:.8rem">{% for e in form.bio.errors %}{{ e }}{% endfor %}</div>
+              <span class="char-counter"><span id="bioCount">0</span> chars</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="d-flex align-items-center gap-3 mt-2 flex-wrap">
+          <button type="submit" class="btn btn-submit" id="submitBtn">
+            <i class="bi bi-send-fill me-2"></i>Submit Form
+          </button>
+          <button type="button" class="btn btn-submit" id="getAiBtn"
+                  style="background:var(--accent2)">
+            <i class="bi bi-lightbulb me-2"></i>Get AI Tips
+          </button>
+        </div>
+        <p class="mt-2" style="font-size:.78rem;color:var(--muted)">
+          <i class="bi bi-info-circle me-1"></i>Click <strong>Get AI Tips</strong> after filling the form to get suggestions without submitting.
+        </p>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- AI Panel -->
+  <div class="col-lg-4">
+    <div id="ai-panel">
+      <div class="ai-title">
+        <div class="pulse-dot"></div>
+        AI Assistant
+      </div>
+      <div id="ai-loading" class="d-flex align-items-center gap-2 mb-2" style="display:none!important">
+        <div class="spinner-border spinner-sm text-light" role="status"></div>
+        <small class="text-white-50">Analysing your inputs…</small>
+      </div>
+      <div id="ai-suggestion-text" style="font-size:.88rem;color:rgba(255,255,255,.75);line-height:1.7">
+        Fill the form and click <strong style="color:#fff">Get AI Tips</strong> — I'll review your inputs and suggest improvements.
+      </div>
+    </div>
+
+    <div class="form-card mt-3 p-3">
+      <p class="field-group-label mb-2"><i class="bi bi-info-circle me-1"></i>Quick Tips</p>
+      <ul class="list-unstyled mb-0" style="font-size:.82rem;color:var(--muted);line-height:2">
+        <li><i class="bi bi-check2 text-success me-1"></i>Use your legal full name</li>
+        <li><i class="bi bi-check2 text-success me-1"></i>Include country code in phone</li>
+        <li><i class="bi bi-check2 text-success me-1"></i>A good bio is 50–200 chars</li>
+        <li><i class="bi bi-check2 text-success me-1"></i>Double-check your email</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  'use strict';
+
+  const FIELDS = ['id_full_name','id_email','id_phone','id_date_of_birth','id_address','id_city','id_occupation'];
+
+  // ── Progress ──────────────────────────────────────────────────────────────
+  function updateProgress() {
+    let filled = 0;
+    FIELDS.forEach(id => { if (document.getElementById(id)?.value.trim()) filled++; });
+    const pct = Math.round((filled / FIELDS.length) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = pct + '% complete';
+    document.getElementById('fieldCount').textContent = filled + ' / ' + FIELDS.length + ' fields filled';
+  }
+  FIELDS.forEach(id => document.getElementById(id)?.addEventListener('input', updateProgress));
+
+  // ── Bio char counter ──────────────────────────────────────────────────────
+  const bioEl = document.getElementById('id_bio');
+  bioEl.addEventListener('input', () => {
+    document.getElementById('bioCount').textContent = bioEl.value.length;
+  });
+
+  // ── Validators ────────────────────────────────────────────────────────────
+  const validators = {
+    id_full_name:     v => v.trim().length >= 3    || 'Name must be at least 3 characters',
+    id_email:         v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'Enter a valid email',
+    id_phone:         v => { const d = v.replace(/[^\d]/g,''); return (d.length >= 7 && d.length <= 15) || 'Enter a valid phone number'; },
+    id_date_of_birth: v => !!v                     || 'Date of birth is required',
+    id_address:       v => v.trim().length >= 5    || 'Enter a valid address',
+    id_city:          v => v.trim().length >= 2    || 'Enter your city',
+    id_occupation:    v => v.trim().length >= 2    || 'Enter your occupation',
+  };
+
+  function validateField(el) {
+    const rule = validators[el.id];
+    if (!rule) return true;
+    const result = rule(el.value);
+    const ok = result === true;
+    el.classList.toggle('is-valid', ok);
+    el.classList.toggle('is-invalid', !ok);
+    const jsErr = el.parentElement.querySelector('.js-error');
+    if (jsErr) jsErr.textContent = ok ? '' : (typeof result === 'string' ? result : '');
+    return ok;
+  }
+
+  FIELDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('blur', () => validateField(el));
+    el.addEventListener('input', () => { if (el.classList.contains('is-invalid')) validateField(el); });
+  });
+
+  // ── AI fetch (button click ONLY — no auto-trigger) ────────────────────────
+  const aiText    = document.getElementById('ai-suggestion-text');
+  const aiLoading = document.getElementById('ai-loading');
+  let   aiCooling = false;  // simple cooldown flag
+
+  function gatherFormData() {
+    return {
+      full_name:     document.getElementById('id_full_name')?.value     || '',
+      email:         document.getElementById('id_email')?.value         || '',
+      phone:         document.getElementById('id_phone')?.value         || '',
+      date_of_birth: document.getElementById('id_date_of_birth')?.value || '',
+      address:       document.getElementById('id_address')?.value       || '',
+      city:          document.getElementById('id_city')?.value          || '',
+      occupation:    document.getElementById('id_occupation')?.value    || '',
+      bio:           document.getElementById('id_bio')?.value           || '',
+    };
+  }
+
+  function fetchAI() {
+    if (aiCooling) {
+      aiText.innerHTML = '⏳ Please wait a few seconds before requesting again.';
+      return;
+    }
+
+    const data = gatherFormData();
+    const filled = Object.values(data).filter(v => v.trim().length > 1).length;
+    if (filled < 2) {
+      aiText.innerHTML = 'Please fill at least a few fields first!';
+      return;
+    }
+
+    aiLoading.style.display = 'flex';
+    aiText.style.opacity = '0.3';
+
+    // 30-second cooldown to avoid rate limit
+    aiCooling = true;
+    const btn = document.getElementById('getAiBtn');
+    btn.disabled = true;
+    let secs = 30;
+    btn.innerHTML = `<i class="bi bi-hourglass-split me-2"></i>Wait ${secs}s`;
+    const timer = setInterval(() => {
+      secs--;
+      btn.innerHTML = `<i class="bi bi-hourglass-split me-2"></i>Wait ${secs}s`;
+      if (secs <= 0) {
+        clearInterval(timer);
+        aiCooling = false;
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-lightbulb me-2"></i>Get AI Tips';
+      }
+    }, 1000);
+
+    fetch("{% url 'ai_suggest' %}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+      },
+      body: JSON.stringify(data),
+    })
+    .then(r => r.json())
+    .then(d => {
+      aiLoading.style.display = 'none';
+      aiText.style.opacity = '1';
+      const raw = d.suggestion || 'No suggestions available.';
+      const lines = raw.split('\n').filter(l => l.trim());
+      let html = '';
+      lines.forEach(line => {
+        const clean = line.replace(/^[-•*]\s*/, '').trim();
+        if (clean) html += `<div style="margin-bottom:.6rem;padding-left:.8rem;border-left:2px solid rgba(200,80,42,.6)">
+          <i class="bi bi-arrow-right-short" style="color:#c8502a"></i>${clean}</div>`;
+      });
+      aiText.innerHTML = html || raw;
+    })
+    .catch(() => {
+      aiLoading.style.display = 'none';
+      aiText.style.opacity = '1';
+      aiText.textContent = '⚠️ Could not reach AI. Check your internet connection.';
+    });
+  }
+
+  document.getElementById('getAiBtn').addEventListener('click', fetchAI);
+
+  // ── Form submit validation ────────────────────────────────────────────────
+  document.getElementById('registrationForm').addEventListener('submit', function (e) {
+    let allOk = true;
+    FIELDS.forEach(id => { if (!validateField(document.getElementById(id))) allOk = false; });
+    if (!allOk) {
+      e.preventDefault();
+      document.querySelector('.is-invalid')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-sm me-2"></span>Submitting…';
+  });
+
+})();
+</script>
+{% endblock %}

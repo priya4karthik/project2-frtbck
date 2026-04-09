@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Submitted — AI Form Assistant{% endblock %}
+
+{% block content %}
+<div class="text-center mb-5">
+  <div style="width:72px;height:72px;background:linear-gradient(135deg,#2d9e5f,#1a7a45);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem">
+    <i class="bi bi-check-lg text-white" style="font-size:2rem"></i>
+  </div>
+  <h1 class="section-heading">Form <span class="highlight">Submitted!</span></h1>
+  <p class="section-sub mt-2">Your registration was saved. Here's what our AI thinks about your submission.</p>
+</div>
+
+<div class="row g-4">
+  <!-- Summary card -->
+  <div class="col-lg-6">
+    <div class="form-card h-100">
+      <p class="field-group-label"><i class="bi bi-person-lines-fill me-1"></i>Submitted Details</p>
+      <table class="table table-sm table-borderless" style="font-size:.9rem">
+        <tbody>
+          <tr><th class="text-muted fw-normal" style="width:38%">Name</th><td>{{ submission.full_name }}</td></tr>
+          <tr><th class="text-muted fw-normal">Email</th><td>{{ submission.email }}</td></tr>
+          <tr><th class="text-muted fw-normal">Phone</th><td>{{ submission.phone }}</td></tr>
+          <tr><th class="text-muted fw-normal">Date of Birth</th><td>{{ submission.date_of_birth }}</td></tr>
+          <tr><th class="text-muted fw-normal">Address</th><td>{{ submission.address }}</td></tr>
+          <tr><th class="text-muted fw-normal">City</th><td>{{ submission.city }}</td></tr>
+          <tr><th class="text-muted fw-normal">Occupation</th><td>{{ submission.occupation }}</td></tr>
+          {% if submission.bio %}
+          <tr><th class="text-muted fw-normal">Bio</th><td>{{ submission.bio }}</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- AI suggestions card -->
+  <div class="col-lg-6">
+    <div id="ai-panel" style="position:static;height:100%">
+      <div class="ai-title"><i class="bi bi-stars me-1" style="font-size:1rem"></i>AI Feedback</div>
+      <div style="font-size:.88rem;color:rgba(255,255,255,.85);line-height:1.8;white-space:pre-wrap">
+        {{ ai_suggestions }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex gap-3 mt-4">
+  <a href="{% url 'form' %}" class="btn btn-submit"><i class="bi bi-plus-circle me-2"></i>New Submission</a>
+  <a href="{% url 'submissions' %}" class="btn btn-outline-secondary"><i class="bi bi-table me-2"></i>View All</a>
+</div>
+{% endblock %}
